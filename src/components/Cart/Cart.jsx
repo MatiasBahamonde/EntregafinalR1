@@ -1,12 +1,29 @@
-
 import React, { useState } from 'react';
 import MetodoDePago from '../MetodoDePago/MetodoDePago';
-import PropTypes from 'prop-types';
-import { ShoppingCartIcon } from '../Icons/Icons'; 
+import { useCartContext } from '../../CartContext/CartContext';
+import { ShoppingCartIcon } from '../Icons/Icons';
 
-const Cart = ({ cart, removeFromCart, closeCart }) => {
+const Cart = ({ closeCart }) => {
+  const { cart, updateCart, removeFromCart } = useCartContext();
   const [isPaymentVisible, setIsPaymentVisible] = useState(false);
+
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  const handleIncreaseQuantity = (item) => {
+    if (item.stock > item.quantity) {
+      updateCart(item.id, item.quantity + 1);
+    } else {
+      alert('No hay suficiente stock disponible.');
+    }
+  };
+
+  const handleDecreaseQuantity = (item) => {
+    if (item.quantity > 1) {
+      updateCart(item.id, item.quantity - 1);
+    } else {
+      removeFromCart(item.id);
+    }
+  };
 
   const handleProceedToPayment = () => {
     setIsPaymentVisible(true);
@@ -27,13 +44,20 @@ const Cart = ({ cart, removeFromCart, closeCart }) => {
                       <h2 className="text-lg font-bold ml-2">Carrito de Compras</h2>
                     </div>
                     <div className="ml-3 flex h-7 items-center">
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
                         onClick={closeCart}
                       >
                         <span className="sr-only">Cerrar panel</span>
-                        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
+                        <svg
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          aria-hidden="true"
+                        >
                           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
@@ -58,10 +82,24 @@ const Cart = ({ cart, removeFromCart, closeCart }) => {
                                     <h3>{item.name}</h3>
                                     <p className="ml-4">${item.price.toFixed(2)}</p>
                                   </div>
-                                  <p className="text-gray-500">Talla: {item.talla}</p>
+                                  <p className="text-gray-500">Stock disponible: {item.stock - item.quantity}</p>
                                 </div>
                                 <div className="flex flex-1 items-end justify-between text-sm">
-                                  <p className="text-gray-500">Cantidad: {item.quantity}</p>
+                                  <div className="flex items-center">
+                                    <button
+                                      onClick={() => handleDecreaseQuantity(item)}
+                                      className="px-2 py-1 text-gray-500 hover:text-gray-700"
+                                    >
+                                      -
+                                    </button>
+                                    <span className="mx-2">{item.quantity}</span>
+                                    <button
+                                      onClick={() => handleIncreaseQuantity(item)}
+                                      className="px-2 py-1 text-gray-500 hover:text-gray-700"
+                                    >
+                                      +
+                                    </button>
+                                  </div>
                                   <div className="flex">
                                     <button
                                       type="button"
@@ -109,12 +147,6 @@ const Cart = ({ cart, removeFromCart, closeCart }) => {
       </div>
     </div>
   );
-};
-
-Cart.propTypes = {
-  cart: PropTypes.array.isRequired,
-  removeFromCart: PropTypes.func.isRequired,
-  closeCart: PropTypes.func.isRequired,
 };
 
 export default Cart;

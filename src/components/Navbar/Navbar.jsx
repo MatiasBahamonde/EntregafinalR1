@@ -12,7 +12,7 @@ const Navbar = ({ cartItemCount, toggleCart }) => {
         />
         <button onClick={toggleCart} className="relative flex items-center">
           <ShoppingCartIcon />
-          {cartItemCount > 0 && (
+          {cartItemCount > 1 && (
             <span className="ml-2 bg-red-600 text-white rounded-full px-2 text-sm">
               {cartItemCount}
             </span>

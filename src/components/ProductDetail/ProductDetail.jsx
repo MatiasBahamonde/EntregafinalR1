@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useCartContext } from '../../CartContext/CartContext'; 
 
-const ProductDetail = ({ product, onClose, addToCart }) => {
-  const [selectedSize, setSelectedSize] = useState('');
+const ProductDetail = ({ product, onClose }) => {
+const [selectedSize, setSelectedSize] = useState('');
+const { addToCart } = useCartContext(); 
 
-  const handleAddToCart = () => {
-    const productWithSize = { ...product, size: selectedSize };
-    addToCart(productWithSize);
-    onClose();
-  };
+const handleAddToCart = () => {
+const productWithSize = { ...product, size: selectedSize };
+addToCart(productWithSize);  
+onClose();
+};
 
-  return (
-    <div 
-      className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50" 
-      onClick={onClose}
+return (
+  <div 
+    className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50" 
+    onClick={onClose}
     >
-      <div 
+    <div 
         className="bg-white p-4 rounded shadow-lg max-w-4xl flex relative overflow-auto max-h-screen"
         onClick={(e) => e.stopPropagation()}
       >
@@ -33,18 +35,18 @@ const ProductDetail = ({ product, onClose, addToCart }) => {
             <p className="text-lg text-gray-600">${product.price.toFixed(2)}</p>
             <p className="text-gray-700 mt-2">{product.description}</p>
             <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700">Talla:</label>
-              <select
-                value={selectedSize}
-                onChange={(e) => setSelectedSize(e.target.value)}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500"
-              >
-                <option value="">Seleccione una talla</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-              </select>
+            <label className="block text-sm font-medium text-gray-700">Talla:</label>
+            <select
+            value={selectedSize}
+            onChange={(e) => setSelectedSize(e.target.value)}
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500"
+            >
+            <option value="">Seleccione una talla</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            </select>
             </div>
           </div>
           <button
@@ -62,14 +64,13 @@ const ProductDetail = ({ product, onClose, addToCart }) => {
 
 ProductDetail.propTypes = {
   product: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  price: PropTypes.number.isRequired,
+  image: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
   }).isRequired,
   onClose: PropTypes.func.isRequired,
-  addToCart: PropTypes.func.isRequired,
 };
 
 export default ProductDetail;
